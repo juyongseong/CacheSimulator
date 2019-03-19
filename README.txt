@@ -1,4 +1,4 @@
-1. General Outline of a Proposal for this Project
+# 1. General Outline of a Proposal for this Project
 
 The above project is to implement the cache simulator program using C++.
 The Cache simulator outputs a hit rate for a given memory trace and cache setting (cache overall size, block size, association).
