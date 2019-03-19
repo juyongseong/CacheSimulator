@@ -1,3 +1,4 @@
+
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -14,11 +15,11 @@ typedef struct {
 class LRU{
 private:
 	int size;
-	int* RU;	//MRUbit´Â RU[0], LRUbit´Â RU[size-1]
+	int* RU;	//MRUbitëŠ” RU[0], LRUbitëŠ” RU[size-1]
 	int associativity;
 public:
 	LRU() {}
-	void init(int associativity) {	//LRU ÃÊ±âÈ­
+	void init(int associativity) {	//LRU ì´ˆê¸°í™”
 		size=0;
 		RU = new int[associativity];
 		this->associativity = associativity;
@@ -26,7 +27,7 @@ public:
 	void put(int num) {
 		int temp;
 		int state = 1;
-		for (int i = 0; i < size; i++) {		//ÃÖ±Ù »ç¿ëÇÑ slot¸¦ °¡Àå ¾ÕÀ¸·Î..
+		for (int i = 0; i < size; i++) {		//ìµœê·¼ ì‚¬ìš©í•œ slotë¥¼ ê°€ì¥ ì•ìœ¼ë¡œ..
 			if (num == RU[i]) {
 				state = 0;
 				temp = RU[i];
@@ -38,7 +39,7 @@ public:
 			}
 		}
 		if (size == associativity) {
-			//¹«Á¶°Ç °ãÄ¡Áö´Â ¾ÊÀ½
+			//ë¬´ì¡°ê±´ ê²¹ì¹˜ì§€ëŠ” ì•ŠìŒ
 		}
 		else if(state) {
 			for (int i = size; i > 0; i--) {
@@ -63,22 +64,22 @@ typedef struct {
 
 class Cache{
 private:
-	int totalbyte;		//cacheÀÇ ÀüÃ¼ ¹ÙÀÌÆ® ´ÜÀ§ Å©±â 
-	int blockbyte;		//cache block ÇÏ³ªÀÇ ¹ÙÀÌÆ® ´ÜÀ§ Å©±â 
-	int nSet;			//setÀÇ °³¼ö	2ÀÇ index½Â
-	int associativity;	//associativity,Áï N-way associative cache¿¡¼­ N°ª
-	int nTag;			//TIO°¢°¢ÀÇ ºñÆ®
+	int totalbyte;		//cacheì˜ ì „ì²´ ë°”ì´íŠ¸ ë‹¨ìœ„ í¬ê¸° 
+	int blockbyte;		//cache block í•˜ë‚˜ì˜ ë°”ì´íŠ¸ ë‹¨ìœ„ í¬ê¸° 
+	int nSet;			//setì˜ ê°œìˆ˜	2ì˜ indexìŠ¹
+	int associativity;	//associativity,ì¦‰ N-way associative cacheì—ì„œ Nê°’
+	int nTag;			//TIOê°ê°ì˜ ë¹„íŠ¸
 	int nIndex;
 	int nOffset;		
-	int hit;			//Á¢±Ù, È÷Æ®, ¹Ì½º Ä«¿îÆ®
+	int hit;			//ì ‘ê·¼, íˆíŠ¸, ë¯¸ìŠ¤ ì¹´ìš´íŠ¸
 	int miss;
 	int access;
-	Set* allSet;		//Set±¸Á¶Ã¼ ¹è¿­À» °¡Áö°í ÀÖ´Â º¯¼ö
-	Set* mySet;			//Set ±¸Á¶Ã¼¸¦ °¡¸®Å°´Â Æ÷ÀÎÅÍ º¯¼ö, ÆíÇÑ ¿¬»êÀ» À§ÇÑ..
+	Set* allSet;		//Setêµ¬ì¡°ì²´ ë°°ì—´ì„ ê°€ì§€ê³  ìˆëŠ” ë³€ìˆ˜
+	Set* mySet;			//Set êµ¬ì¡°ì²´ë¥¼ ê°€ë¦¬í‚¤ëŠ” í¬ì¸í„° ë³€ìˆ˜, í¸í•œ ì—°ì‚°ì„ ìœ„í•œ..
 public:
 	Cache() {}
 	~Cache() {
-		for(int i=0; i<nSet; i++) {		//¼Ò¸êÀÚ¿¡¼­ ¸Ş¸ğ¸® ¹İÈ¯
+		for(int i=0; i<nSet; i++) {		//ì†Œë©¸ìì—ì„œ ë©”ëª¨ë¦¬ ë°˜í™˜
 			mySet = allSet +i;
 			free(mySet->myLine);
 			free(mySet->lru);
@@ -86,13 +87,13 @@ public:
 		free(allSet);
 
 	}
-	int init(int TB, int BB, int A) {					//ÁÖ¾îÁø °ª¿¡µû¶ó º¯¼ö¸¦ ÃÊ±âÈ­ ÇÏ´Â ÇÔ¼ö
+	int init(int TB, int BB, int A) {					//ì£¼ì–´ì§„ ê°’ì—ë”°ë¼ ë³€ìˆ˜ë¥¼ ì´ˆê¸°í™” í•˜ëŠ” í•¨ìˆ˜
 		totalbyte = TB;
 		blockbyte = BB;
 		associativity = A;
 		nSet = (totalbyte/blockbyte)/associativity;
 
-		nOffset = log((double)blockbyte)/log(2.0);			//°è»ê¹ı¿¡ µû¶ó¼­ TIOºñÆ®±¸ÇÔ
+		nOffset = log((double)blockbyte)/log(2.0);			//ê³„ì‚°ë²•ì— ë”°ë¼ì„œ TIOë¹„íŠ¸êµ¬í•¨
 		nIndex = log((double)totalbyte)/log(2.0) - log((double)associativity)/log(2.0) - nOffset;
 		nTag = 32 - nOffset - nIndex;
 		hit=0;
@@ -100,102 +101,102 @@ public:
 		access=0;
 
 		allSet = (Set*)malloc((nSet)*sizeof(Set));	
-		//set±¸Á¶Ã¼¸¦ nSet¸¸Å­(ÀÎµ¦½ºÀÇ°³¼ö) ÀúÀåÇÒ °ø°£ ¸¸µë. allSet[nSet]
-		for(int i=0; i<nSet; i++) {			//°¢°¢ÀÇ set±¸Á¶Ã¼ ÃÊ±âÈ­
+		//setêµ¬ì¡°ì²´ë¥¼ nSetë§Œí¼(ì¸ë±ìŠ¤ì˜ê°œìˆ˜) ì €ì¥í•  ê³µê°„ ë§Œë“¬. allSet[nSet]
+		for(int i=0; i<nSet; i++) {			//ê°ê°ì˜ setêµ¬ì¡°ì²´ ì´ˆê¸°í™”
 			mySet = allSet+i;
 			mySet->myLine = (Line*)malloc((associativity)*sizeof(Line));	
-			//Line±¸Á¶Ã¼¸¦ associativity¸¸Å­(slotÀÇ°³¼ö) ÀúÀåÇÒ °ø°£ ¸¸µë
+			//Lineêµ¬ì¡°ì²´ë¥¼ associativityë§Œí¼(slotì˜ê°œìˆ˜) ì €ì¥í•  ê³µê°„ ë§Œë“¬
 
-			for(int j=0; j<associativity; j++) {		//°¢LineÃÊ±âÈ­
+			for(int j=0; j<associativity; j++) {		//ê°Lineì´ˆê¸°í™”
 				(mySet->myLine+j)->tag =-1;
 				(mySet->myLine+j)->valid =0;
 			}
-			mySet->lru= new LRU();						//LRUÃÊ±âÈ­
+			mySet->lru= new LRU();						//LRUì´ˆê¸°í™”
 			(mySet->lru)->init(associativity);
 		}
 
 		if(log((double)blockbyte)/log(2.0) - (int)(log((double)blockbyte)/log(2.0)) != 0 ){
-			printf("Cache blockÀÇ Å©±â°¡ 2ÀÇ Áö¼ö½ÂÀÌ ¾Æ´Ñ °æ¿ì \n");
+			printf("Cache blockì˜ í¬ê¸°ê°€ 2ì˜ ì§€ìˆ˜ìŠ¹ì´ ì•„ë‹Œ ê²½ìš° \n");
 			return 1;
 		}
 		if(associativity !=1 && associativity !=2 && associativity != 4 && associativity != 8) {
-			printf("Associativity°¡ 1, 2, 4, 8 ÀÌ¿ÜÀÇ °ªÀÌ ÀÔ·ÂµÈ °æ¿ì \n");
+			printf("Associativityê°€ 1, 2, 4, 8 ì´ì™¸ì˜ ê°’ì´ ì…ë ¥ëœ ê²½ìš° \n");
 			return 1;
 		}
 		if(totalbyte % (blockbyte * associativity) != 0) {
-			printf("Cache ÀüÃ¼ÀÇ Å©±â°¡ (cache block Å©±â)x(associativity)ÀÇ ¹è¼ö°¡ ¾Æ´Ò °æ¿ì \n");
+			printf("Cache ì „ì²´ì˜ í¬ê¸°ê°€ (cache block í¬ê¸°)x(associativity)ì˜ ë°°ìˆ˜ê°€ ì•„ë‹ ê²½ìš° \n");
 			return 1;
 		}
 		return 0;
 	}
-	void printTIO() {									//TIOºñÆ®¸¦ Ãâ·ÂÇÏ´Â ÇÔ¼ö
+	void printTIO() {									//TIOë¹„íŠ¸ë¥¼ ì¶œë ¥í•˜ëŠ” í•¨ìˆ˜
 		printf("tag: %d bits \nindex: %d bits \noffset: %d bits\n", nTag, nIndex, nOffset);
 	}
-	void printfHitRate() {	//½Ã¹Ä·¹ÀÌÅÍÀÇ °á°ú È÷Æ®·¹ÀÌÆ®¸¦ Ãâ·ÂÇÏ´Â ÇÔ¼ö
+	void printfHitRate() {	//ì‹œë®¬ë ˆì´í„°ì˜ ê²°ê³¼ íˆíŠ¸ë ˆì´íŠ¸ë¥¼ ì¶œë ¥í•˜ëŠ” í•¨ìˆ˜
 		printf("Result: total access %d, hit %d, hit rate %.2f\n",
 			access, hit, (float)hit/access);
 	}
 	int Simulator(const char* traceFile) {				
-		//ÁÖ¾îÁø Ä³½¬ÀÇ ÇüÅÂ¿¡ µû¶ó¼­ ½Ã¹Ä·¹ÀÌÅÍ¸¦ µ¹¸®´Â ÇÔ¼ö
+		//ì£¼ì–´ì§„ ìºì‰¬ì˜ í˜•íƒœì— ë”°ë¼ì„œ ì‹œë®¬ë ˆì´í„°ë¥¼ ëŒë¦¬ëŠ” í•¨ìˆ˜
 		char none[256];
 		int address=0;
 		FILE* fin = NULL;
-		if((fin = fopen(traceFile, "r"))== NULL ) {					//ÆÄÀÏÀ» ÀĞ±â¸ğµå·Î ¿ÀÇÂ
-			printf("Á¸ÀçÇÏÁö ¾ÊÀº Æ®·¹ÀÌ½º ÆÄÀÏ ÀÔ·ÂÇßÀ» °æ¿ì \n");	//ÆÄÀÏÀÌ ¾øÀ»°æ¿ì ¸®ÅÏ1
+		if((fin = fopen(traceFile, "r"))== NULL ) {					//íŒŒì¼ì„ ì½ê¸°ëª¨ë“œë¡œ ì˜¤í”ˆ
+			printf("ì¡´ì¬í•˜ì§€ ì•Šì€ íŠ¸ë ˆì´ìŠ¤ íŒŒì¼ ì…ë ¥í–ˆì„ ê²½ìš° \n");	//íŒŒì¼ì´ ì—†ì„ê²½ìš° ë¦¬í„´1
 			return 1;
 		}
-		int tag, index, offset;							//°ªÀ» ÀúÀåÇÒ Á¤¼ö	
-		int tagMask, indexMask, offsetMask;				//ºñÆ®¸¶½ºÅ©
+		int tag, index, offset;							//ê°’ì„ ì €ì¥í•  ì •ìˆ˜	
+		int tagMask, indexMask, offsetMask;				//ë¹„íŠ¸ë§ˆìŠ¤í¬
 
 		offsetMask = blockbyte-1;						
-		//ex ¸¸¾à blockbyte == 16ÀÌ¶ó¸é 0000 0000 0000 0000 0000 0000 0000 1111
+		//ex ë§Œì•½ blockbyte == 16ì´ë¼ë©´ 0000 0000 0000 0000 0000 0000 0000 1111
 		indexMask = (nSet-1)<<nOffset;	
 		tagMask = -1<<(nIndex+nOffset);
 
-		while(!feof(fin)) {													//ÆÄÀÏÀÇ ³¡±îÁö ÀĞÀ½
-			if(fscanf(fin, "%s %x %s", none, &address, none) != 3) break;	//\n\0¿¡¼­ \0À» ÀĞÀ»°æ¿ì ¹æÁö
+		while(!feof(fin)) {													//íŒŒì¼ì˜ ëê¹Œì§€ ì½ìŒ
+			if(fscanf(fin, "%s %x %s", none, &address, none) != 3) break;	//\n\0ì—ì„œ \0ì„ ì½ì„ê²½ìš° ë°©ì§€
 
-			offset = address & offsetMask;									//ºñÆ®¸¶½ºÅ©·Î °¢ °ªÀ» ÀúÀå
+			offset = address & offsetMask;									//ë¹„íŠ¸ë§ˆìŠ¤í¬ë¡œ ê° ê°’ì„ ì €ì¥
 			index = (address & indexMask)>>nOffset;
 			tag = (address & tagMask)>>nIndex+nOffset;
 
-			access++;									//Á¢±Ù++
+			access++;									//ì ‘ê·¼++
 			//printf("@tag : %x,\tindex : %x,\t",tag, index);
 			mySet = allSet + index;						// mySet = allSet[index]
-			bool missOrHit = false;						//false´Â miss, true´Â hit
+			bool missOrHit = false;						//falseëŠ” miss, trueëŠ” hit
 			for(int j=0; j<associativity; j++) {
 				if((mySet->myLine)->valid == 1 && (mySet->myLine+j)->tag == tag) {		
-					//¶óÀÎÀÌ Ã¤¿öÁ® ÀÖ°í °°ÀºÅÂ±×°¡ ÀÖ´Ù¸é
+					//ë¼ì¸ì´ ì±„ì›Œì ¸ ìˆê³  ê°™ì€íƒœê·¸ê°€ ìˆë‹¤ë©´
 					missOrHit = true;
-					hit++;								//È÷Æ®++
+					hit++;								//íˆíŠ¸++
 					//cout<<"hit,\tslot : "<< j<<endl;
-					(mySet->lru)->put(j);				//LRU°è»ê
+					(mySet->lru)->put(j);				//LRUê³„ì‚°
 					break;
 				}
 			}
-			if(missOrHit ==false) {					//¹Ì½º¶ó¸é
-				miss++;								//¹Ì½º++
+			if(missOrHit ==false) {					//ë¯¸ìŠ¤ë¼ë©´
+				miss++;								//ë¯¸ìŠ¤++
 				
 				int size = (mySet->lru)->getSize();	
-				//size¸¦ Æ÷¹®¿¡¼­ invalue¸¦ Ã¼Å©ÇØ¼­ ±¸ÇÒ¼öµµ ÀÖÁö¸¸,, 
-				//LRU±¸Á¶Ã¼¸¦ ÀÌ¿ëÇÏ¿© ±¸ÇÔ.
+				//sizeë¥¼ í¬ë¬¸ì—ì„œ invalueë¥¼ ì²´í¬í•´ì„œ êµ¬í• ìˆ˜ë„ ìˆì§€ë§Œ,, 
+				//LRUêµ¬ì¡°ì²´ë¥¼ ì´ìš©í•˜ì—¬ êµ¬í•¨.
 				if(size == associativity) {	
-					//²ËÂ÷ÀÖ´Ù¸é LRUºñÆ®¿¡ °ªÀ» Ã¤¿ö ³Ö´Â´Ù.
+					//ê½‰ì°¨ìˆë‹¤ë©´ LRUë¹„íŠ¸ì— ê°’ì„ ì±„ì›Œ ë„£ëŠ”ë‹¤.
 					int LRUbit = (mySet->lru)->getLRUbit();	
 					(mySet->myLine+LRUbit)->tag=tag;
 					(mySet->myLine+LRUbit)->valid=1;
-					(mySet->lru)->put(LRUbit);	//LRU°è»ê
+					(mySet->lru)->put(LRUbit);	//LRUê³„ì‚°
 					//cout<<"miss,\tslot : "<<LRUbit<<endl;
 				}else {	
-					//²ËÂ÷Áö ¾Ê¾Ò´Ù¸é ³²Àº Ä­¿¡ °ªÀ» Ã¤¿ö ³Ö´Â´Ù.
+					//ê½‰ì°¨ì§€ ì•Šì•˜ë‹¤ë©´ ë‚¨ì€ ì¹¸ì— ê°’ì„ ì±„ì›Œ ë„£ëŠ”ë‹¤.
 					(mySet->myLine+size)->tag=tag;
 					(mySet->myLine+size)->valid=1;	
-					(mySet->lru)->put(size);	//LRU°è»ê
+					(mySet->lru)->put(size);	//LRUê³„ì‚°
 					//cout<<"miss,\tslot : "<<size<<endl;
 				}
 			}
 		}
-		fclose(fin);				//ÆÄÀÏÀ» ´İ´Â´Ù.
+		fclose(fin);				//íŒŒì¼ì„ ë‹«ëŠ”ë‹¤.
 		return 0;
 	}
 };
@@ -203,23 +204,23 @@ public:
 int main(int argc, const char* argv[]) {
 
 	if(argc != 5) {
-		printf("ÇÁ·Î±×·¥ÀÇ ÀÔ·Â ÀÎÀÚ°¡ 4°³°¡ ¾Æ´Ò °æ¿ì\n");				//ÀÔ·ÂµÈ ÀÎÀÚÀÇ ¼ö°¡ Àß¸øµÈ °æ¿ì
-		printf("»ç¿ë¹ı. simple_cache_sim <trace file> <cache's byte size> <cache block's byte size> <number of associativity>\n");
+		printf("í”„ë¡œê·¸ë¨ì˜ ì…ë ¥ ì¸ìê°€ 4ê°œê°€ ì•„ë‹ ê²½ìš°\n");				//ì…ë ¥ëœ ì¸ìì˜ ìˆ˜ê°€ ì˜ëª»ëœ ê²½ìš°
+		printf("ì‚¬ìš©ë²•. simple_cache_sim <trace file> <cache's byte size> <cache block's byte size> <number of associativity>\n");
 		return 1;
 	}
 	Cache* cache = new Cache();
 	const char* traceFile = argv[1];
 
 	if(cache->init(atoi(argv[2]),atoi(argv[3]),atoi(argv[4])) == 0) {	
-		//ÀÔ·ÂµÈ °ªÀÇ ÃÊ±âÈ­°¡ Á¤»óÀÏ °æ¿ì
+		//ì…ë ¥ëœ ê°’ì˜ ì´ˆê¸°í™”ê°€ ì •ìƒì¼ ê²½ìš°
 		cache->printTIO();
 		if(cache->Simulator(traceFile) == 0) {				
-			//½Ã¹Ä·¹ÀÌÅÍ°¡ Á¤»ó Á¾·á‰çÀ» °æ¿ì
+			//ì‹œë®¬ë ˆì´í„°ê°€ ì •ìƒ ì¢…ë£ŒÂ‰ç‘› ê²½ìš°
 			cache->printfHitRate();
 		}else 
-			printf("½Ã¹Ä·¹ÀÌÅÍÀÇ ºñÁ¤»ó Á¾·á");
+			printf("ì‹œë®¬ë ˆì´í„°ì˜ ë¹„ì •ìƒ ì¢…ë£Œ");
 	}else 
-		printf("¿Ã¹Ù¸£Áö ¾ÊÀº Ä³½¬ÀÇ ÃÊ±âÈ­\n");
+		printf("ì˜¬ë°”ë¥´ì§€ ì•Šì€ ìºì‰¬ì˜ ì´ˆê¸°í™”\n");
 
 	return 0;
 }
