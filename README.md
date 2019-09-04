@@ -49,4 +49,6 @@ The fourth output is the result of the cache simulation, which outputs three inf
 The total number of memory accesses represents the number of memory accesses in the trace file, which is the same as the number of lines in the trace file. 
 The Hit rate can be calculated from the total number of memory accesses and the hit count.
 
+## 6. junheejang view
+
 
