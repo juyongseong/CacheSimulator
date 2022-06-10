@@ -48,7 +48,3 @@ The 1st-3rd outputs represent the length of the field corresponding to tag, inde
 The fourth output is the result of the cache simulation, which outputs three information: total number of memory access, hit count, and hit rate. 
 The total number of memory accesses represents the number of memory accesses in the trace file, which is the same as the number of lines in the trace file. 
 The Hit rate can be calculated from the total number of memory accesses and the hit count.
-
-## 6. junheejang view
-
-
